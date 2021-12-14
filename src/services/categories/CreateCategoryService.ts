@@ -11,8 +11,8 @@ class CreateCategoryService {
     constructor(categoriesRepository: CategoriesRepository) {
         this.repository = categoriesRepository;
     }
-    public execute({title}: CategoryRequestDTO): Category {
-        return this.repository.create({title});
+    public execute({ title }: CategoryRequestDTO): Category {
+        return this.repository.create({ title });
     }
 }
 
