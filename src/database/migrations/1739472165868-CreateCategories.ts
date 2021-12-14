@@ -1,9 +1,8 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { MigrationInterface, QueryRunner, Table, TableColumn, TableForeignKey } from "typeorm";
 
 export default class CreateCategories1639472165868 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
         await queryRunner.createTable(
             new Table({
                 name: 'categories',
@@ -23,10 +22,26 @@ export default class CreateCategories1639472165868 implements MigrationInterface
                 ]
             })
         )
+            .then(async () =>
+                await queryRunner.addColumn("categories", new TableColumn({
+                    name: "userId",
+                    type: "varchar"
+                })))
+            .then(async () =>
+                await queryRunner.createForeignKey("categories", new TableForeignKey({
+                    columnNames: ["userId"],
+                    referencedColumnNames: ["id"],
+                    referencedTableName: "users",
+                    onDelete: "CASCADE"
+                })));
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        const table = await queryRunner.getTable("categories");
+        const foreignKeys = table!.foreignKeys;
+        await queryRunner.dropForeignKeys("categories", foreignKeys)
         await queryRunner.dropTable('categories')
+
     }
 
 }

@@ -1,21 +1,28 @@
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { uuid } from "uuidv4";
+import Category from "./Category";
 import Post from "./Post";
 
-
+@Entity('users')
 class User {
+    @PrimaryGeneratedColumn('uuid')
     id: string;
-    username :string;
+
+    @Column()
+    username: string;
+
+    @Column()
     email: string;
+
+    @Column()
     password: string;
+
+    @OneToMany(() => Post, post => post.user)
     posts: Post[];
 
-    constructor({username, email, password, posts }: Omit<User, 'id'>) {
-        this.id = uuid();
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.posts = posts;
-    }
+    @OneToMany(() => Category, category => category.user)
+    categories: Category[];
+
 }
 
 export default User;

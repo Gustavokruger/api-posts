@@ -1,30 +1,32 @@
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { uuid } from "uuidv4";
 import Category from "./Category";
+import User from "./User";
 
-
+@Entity('posts')
 
 class Post {
-    id: string;
-    title: string;
-    description: string;
-    thumbmail: string;
-    category: Category;
-    status: string;
 
-    constructor({
-        title,
-        description,
-        thumbmail,
-        category,
-        status
-    }: Omit<Post, 'id'>) {
-        this.id = uuid();
-        this.title = title;
-        this.description = description;
-        this.thumbmail = thumbmail;
-        this.category = category;
-        this.status = status
-    }
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
+    @Column()
+    title: string;
+
+    @Column()
+    description: string;
+
+    @Column()
+    thumbmail: string;
+
+    @ManyToOne(() => Category, category => category.posts)
+    category: Category;
+
+    @ManyToOne(() => User, user => user.posts)
+    user: User;
+
+    @Column()
+    status: string;
 }
 
 export default Post;
