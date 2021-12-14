@@ -1,13 +1,14 @@
-import { uuid } from "uuidv4";
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
 
+@Entity('categories')
 class Category {
+
+    @PrimaryGeneratedColumn('uuid')
     id: string;
+
+    @Column()
     title: string;
 
-    constructor({title}: Omit<Category, 'id'>) {
-        this.id = uuid();
-        this.title = title
-    }
 }
 
 export default Category;

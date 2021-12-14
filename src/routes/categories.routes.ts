@@ -1,28 +1,28 @@
 import { Router } from "express";
-import Category from "../models/Category";
-import Post from "../models/Post";
+import { getCustomRepository } from "typeorm";
 import CategoriesRepository from "../repositories/CategoriesRepository";
 import CreateCategoryService from "../services/categories/CreateCategoryService";
 
 const categoriesRouter = Router();
-const categoriesRepository = new CategoriesRepository();
-const createCategoryService = new CreateCategoryService(categoriesRepository);
 
-categoriesRouter.post('/create', (req, res) => {
-    try{
+
+categoriesRouter.post('/create', async (req, res) => {
+    try {
         const { title } = req.body;
-        return res.json(createCategoryService.execute(title));
+        return await res.json(await new CreateCategoryService().execute({ title }));
     }
-    catch(err) {
-        return  res.status(400).json({error: err.message});
+    catch (err) {
+        return res.status(400).json({ error: err.message });
     }
 
 
 });
 
-categoriesRouter.get('/getAll', (req, res) => {
+categoriesRouter.get('/getAll', async (req, res) => {
 
-    return res.json(categoriesRepository.getAll());
+    const categoriesRepository = getCustomRepository(CategoriesRepository)
+
+    return res.json(await categoriesRepository.getAll());
 
 });
 

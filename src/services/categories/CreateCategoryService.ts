@@ -1,18 +1,19 @@
+import { getCustomRepository } from "typeorm";
 import Category from "../../models/Category";
 import CategoriesRepository from "../../repositories/CategoriesRepository";
 
-interface CategoryRequestDTO {
+export interface CategoryRequestDTO {
     title: string;
 }
 class CreateCategoryService {
 
-    private repository: CategoriesRepository;
+    public async execute({ title }: CategoryRequestDTO): Promise<Category> {
+        const categoriesRepository = getCustomRepository(CategoriesRepository);
+        const entry = categoriesRepository.create({ title });
 
-    constructor(categoriesRepository: CategoriesRepository) {
-        this.repository = categoriesRepository;
-    }
-    public execute({ title }: CategoryRequestDTO): Category {
-        return this.repository.create({ title });
+        await categoriesRepository.save(entry);
+
+        return entry;
     }
 }
 
